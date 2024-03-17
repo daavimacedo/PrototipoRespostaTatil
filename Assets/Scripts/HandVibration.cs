@@ -15,7 +15,7 @@ public class HandVibration : MonoBehaviour
     public XRBaseController controller;
     public FeedbackManager fbmanager;
 
-    bool isUniqueSoundActive = false;
+    bool isUniqueSoundActive = true;
     bool lastSecondaryButtonState = false;
     InputDevice xrInputDevice;
 
@@ -58,12 +58,7 @@ public class HandVibration : MonoBehaviour
         if (collision.gameObject.CompareTag("porta"))
         {   
             isColliding=true;
-
-            if (!isUniqueSoundActive){
-                alarmePorta.Play();
-            }else{
-                alarmeObjetoGeral.Play();
-            }
+            alarmePorta.Play();
             controller.SendHapticImpulse(0.9f, 1);
         }
         if (collision.gameObject.CompareTag("objetoMedioBaixo"))
@@ -112,12 +107,8 @@ public class HandVibration : MonoBehaviour
         {   
             isColliding=false;
             controller.SendHapticImpulse(0, 0);
+            alarmePorta.Stop();
             
-            if (!isUniqueSoundActive){
-                alarmePorta.Stop();
-            }else{
-                alarmeObjetoGeral.Stop();
-            }
         }
         if (collision.gameObject.CompareTag("objetoMedioBaixo"))
         {   

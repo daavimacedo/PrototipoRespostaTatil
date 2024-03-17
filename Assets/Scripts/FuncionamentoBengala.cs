@@ -11,7 +11,6 @@ public class FuncionamentoBengala : MonoBehaviour
     public GameObject bengalaEsquerda;
 
     //Controle
-    public XRBaseController controller;
     InputDevice xrInputDevice;
 
     //Status dos objetos
@@ -19,8 +18,8 @@ public class FuncionamentoBengala : MonoBehaviour
     bool bengalaEsquerdaAtiva = false;
 
     //Variáveis de memória
-    bool ultimoStatusBotaoPrimarioDireito = false;
-    bool ultimoStatusBotaoPrimarioEsquerdo = false;
+    bool ultimoStatusBotaoGatilhoDireito = false;
+    bool ultimoStatusBotaoGatilhoEsquerdo = false;
     
     //Sons
     public AudioSource somAtivacaoBengalaDireita;
@@ -36,10 +35,10 @@ public class FuncionamentoBengala : MonoBehaviour
     
     void Update()
     {
-        bool botaoPrimarioDireitoValor = GetPrimaryButtonValueRight();
-        bool botaoPrimarioEsquerdoValor = GetPrimaryButtonValueLeft();
+        bool botaoGatilhoDireitoValor = GetTriggerButtonValueRight();
+        bool botaoGatilhoEsquerdoValor = GetTriggerButtonValueLeft();
 
-        if (botaoPrimarioDireitoValor && !ultimoStatusBotaoPrimarioDireito) //Se o status anterior é diferente do atual
+        if (botaoGatilhoDireitoValor && !ultimoStatusBotaoGatilhoDireito) //Se o status anterior é diferente do atual
         {
             bengalaDireitaAtiva = !bengalaDireitaAtiva; // Inverte o estado do item
 
@@ -48,6 +47,7 @@ public class FuncionamentoBengala : MonoBehaviour
                 bengalaDireita.SetActive(true);
                 if (bengalaEsquerdaAtiva){
                     bengalaEsquerda.SetActive(false);
+                    bengalaEsquerdaAtiva = false;
                 }
             }else{
                 somDesativacaoBengalaDireita.Play();
@@ -55,9 +55,9 @@ public class FuncionamentoBengala : MonoBehaviour
             }
 
         }
-        ultimoStatusBotaoPrimarioDireito = botaoPrimarioDireitoValor; // Variável que guarda o valor do último botão direito
+        ultimoStatusBotaoGatilhoDireito = botaoGatilhoDireitoValor; // Variável que guarda o valor do último botão direito
 
-        if (botaoPrimarioEsquerdoValor && !ultimoStatusBotaoPrimarioEsquerdo) //Se o status anterior é diferente do atual
+        if (botaoGatilhoEsquerdoValor && !ultimoStatusBotaoGatilhoEsquerdo) //Se o status anterior é diferente do atual
         {
             bengalaEsquerdaAtiva = !bengalaEsquerdaAtiva; // Inverte o estado do item
 
@@ -67,6 +67,7 @@ public class FuncionamentoBengala : MonoBehaviour
                 bengalaEsquerda.SetActive(true);
                 if (bengalaDireitaAtiva){
                     bengalaDireita.SetActive(false);
+                    bengalaDireitaAtiva = false;
                 }
             }else{
                 somDesativacaoBengalaEsquerda.Play();
@@ -74,10 +75,11 @@ public class FuncionamentoBengala : MonoBehaviour
             }
 
         }
-        ultimoStatusBotaoPrimarioEsquerdo = botaoPrimarioEsquerdoValor; // Variável que guarda o valor do último botão esquerdo
+        ultimoStatusBotaoGatilhoEsquerdo = botaoGatilhoEsquerdoValor; // Variável que guarda o valor do último botão esquerdo
     }
-    //Método para pegar o valor do botão primário do botão direito
-    bool GetPrimaryButtonValueRight()
+    
+    //Método para pegar o valor do botão de gatilho do botão direito
+    bool GetTriggerButtonValueRight()
     {
         List<InputDevice> xrInputDevices = new List<InputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.RightHand, xrInputDevices);
@@ -85,10 +87,11 @@ public class FuncionamentoBengala : MonoBehaviour
     
         bool buttonValue;
 
-        return (xrInputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out buttonValue) && buttonValue);
+        return (xrInputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out buttonValue) && buttonValue);
     }
-    //Método para pegar o valor do botão primário do botão esquerdo
-    bool GetPrimaryButtonValueLeft()
+    
+    //Método para pegar o valor do botão de gatilho do botão esquerdo
+    bool GetTriggerButtonValueLeft()
     {
         List<InputDevice> xrInputDevices = new List<InputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, xrInputDevices);
@@ -96,6 +99,7 @@ public class FuncionamentoBengala : MonoBehaviour
     
         bool buttonValue;
 
-        return (xrInputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out buttonValue) && buttonValue);
+        return (xrInputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out buttonValue) && buttonValue);
     }
 }
+
