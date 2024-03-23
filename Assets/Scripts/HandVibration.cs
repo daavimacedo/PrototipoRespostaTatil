@@ -3,24 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+
 public class HandVibration : MonoBehaviour
 {
-    public AudioSource alarmeParede;
-    public AudioSource alarmePorta;
-    public AudioSource alarmeObjetoGeral;
-    public AudioSource alarmeObjetoMedioBaixo;
-    public AudioSource alarmeObjetoAlto;
-    public Rigidbody rb;
+ 
+    //Variáveis para produzir as respostas tatéis 
+    public Rigidbody rb; //Corpo do objeto principal - O controle e todos seus filhos
     private bool isColliding=false;
-    public XRBaseController controller;
-    public FeedbackManager fbmanager;
+    
+    //Objeto de onde sairá o som
+    [SerializeField]
+    private AudioSource pontaBengala;
+    [SerializeField]
+    private AudioSource mao;
+    [SerializeField]
+    private AudioSource geral;
 
+    //Sons 
+    
+    [SerializeField]
+    private AudioClip somParede;
+    [SerializeField]
+    private AudioClip somPilastra;
+    [SerializeField]
+    private AudioClip somLixeira;
+    [SerializeField]
+    private AudioClip somPorta;
+    [SerializeField]
+    private AudioClip somGeral;
+
+    //Variáveis para troca de modos sonoros
+    public XRBaseController controller;
     bool isUniqueSoundActive = true;
     bool lastSecondaryButtonState = false;
+
+    //public FeedbackManager fbmanager;
+
+  
+
     InputDevice xrInputDevice;
+    void Start()
+    {
+        geral.clip=somGeral;
+    }
 
     void Update()
-    {   
+    {   //Manter a vibração
         if (isColliding){
             print("Esta tocando");
             controller.SendHapticImpulse(0.9f, 10);
@@ -29,7 +57,7 @@ public class HandVibration : MonoBehaviour
             print("Parou de tocar");
         }
 
-        //Alteração de som
+        //Alteração do modo de som
         bool secondaryButtonValue = GetSecondaryButtonValue();
 
         if (secondaryButtonValue && !lastSecondaryButtonState)
@@ -49,43 +77,82 @@ public class HandVibration : MonoBehaviour
             isColliding=true;
 
             if (!isUniqueSoundActive){
-                alarmeParede.Play();
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    // Colisão com o objeto filho - pontaBengala
+                    pontaBengala.clip=somParede;
+                    pontaBengala.Play();
+                }
+                else
+                {
+                    // Colisão com o objeto pai - mao
+                    mao.clip=somParede;
+                    mao.Play();
+                }
             }else{
-                alarmeObjetoGeral.Play();
+                geral.Play();
             }
             controller.SendHapticImpulse(0.9f, 1);
         } 
         if (collision.gameObject.CompareTag("porta"))
         {   
             isColliding=true;
-            alarmePorta.Play();
+            if (IsChildOfObjectParent(collision)) 
+            {
+                pontaBengala.clip=somPorta;
+                pontaBengala.Stop();
+            }
+            else
+            {
+                mao.clip=somPorta;
+                mao.Stop();
+            }
             controller.SendHapticImpulse(0.9f, 1);
         }
-        if (collision.gameObject.CompareTag("objetoMedioBaixo"))
+        if (collision.gameObject.CompareTag("lixeira"))
         {   
             isColliding=true;
             
             if (!isUniqueSoundActive){
-                alarmeObjetoMedioBaixo.Play();
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    pontaBengala.clip=somLixeira;
+                    pontaBengala.Play();
+                }
+                else
+                {
+                    mao.clip=somLixeira;
+                    mao.Play();
+                } 
             }else{
-                alarmeObjetoGeral.Play();
+                geral.Play();
             }
             controller.SendHapticImpulse(0.9f, 1);
         } 
-        if (collision.gameObject.CompareTag("objetoAlto"))
+        if (collision.gameObject.CompareTag("pilastra"))
         {   
             isColliding=true;
             
             if (!isUniqueSoundActive){
-                alarmeObjetoAlto.Play();
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    pontaBengala.clip=somPilastra;
+                    pontaBengala.Play();
+                }
+                else
+                {
+                    mao.clip=somPilastra;
+                    mao.Play();
+                } 
             }else{
-                alarmeObjetoGeral.Play();
+                geral.Play();
             }
             controller.SendHapticImpulse(0.9f, 1);
         }
         if (collision.gameObject.CompareTag("chao"))
         {   
             controller.SendHapticImpulse(0.5f, 0.5f);
+            
         }
     }
 
@@ -98,38 +165,75 @@ public class HandVibration : MonoBehaviour
             controller.SendHapticImpulse(0, 0);
             
             if (!isUniqueSoundActive){
-                alarmeParede.Stop();
+                /*
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    // Colisão com o objeto filho
+                    pontaBengala.Stop();
+                }
+                else
+                {
+                    // Colisão com o objeto pai
+                    mao.Stop();
+                } 
+                */
             }else{
-                alarmeObjetoGeral.Stop();
+                geral.Stop();
             }
         }
         if (collision.gameObject.CompareTag("porta"))
         {   
             isColliding=false;
             controller.SendHapticImpulse(0, 0);
-            alarmePorta.Stop();
-            
+            /*
+            if (IsChildOfObjectParent(collision)) 
+            {
+                pontaBengala.Stop();
+            }
+            else
+            {
+                mao.Stop();
+            } 
+            */ 
         }
-        if (collision.gameObject.CompareTag("objetoMedioBaixo"))
+        if (collision.gameObject.CompareTag("lixeira"))
         {   
             isColliding=false;
             controller.SendHapticImpulse(0, 0);
             
             if (!isUniqueSoundActive){
-                alarmeObjetoMedioBaixo.Stop();
+                /*
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    pontaBengala.Stop();
+                }
+                else
+                {
+                    mao.Stop();
+                } 
+                */
             }else{
-                alarmeObjetoGeral.Stop();
+                geral.Stop();
             }
         }
-        if (collision.gameObject.CompareTag("objetoAlto"))
+        if (collision.gameObject.CompareTag("pilastra"))
         {   
             isColliding=false;
             controller.SendHapticImpulse(0, 0);
             
             if (!isUniqueSoundActive){
-                alarmeObjetoAlto.Stop();
+                /*
+                if (IsChildOfObjectParent(collision)) 
+                {
+                    pontaBengala.Stop();
+                }
+                else
+                {
+                    mao.Stop();
+                } 
+                */
             }else{
-                alarmeObjetoGeral.Stop();
+                geral.Stop();
             }
         }
         if (collision.gameObject.CompareTag("chao"))
@@ -138,6 +242,20 @@ public class HandVibration : MonoBehaviour
         }
     }
 
+    //Método para identificar que um objeto é filho de outro objeto pai
+    private bool IsChildOfObjectParent(Collision collision)
+    {
+        Transform parent = collision.transform.parent;
+        while (parent != null)
+        {
+            if (parent == transform)
+                return true;
+            parent = parent.parent;
+        }
+        return false;
+    }
+
+    //Método para pegar imput do botão secundário (B)
     bool GetSecondaryButtonValue()
     {
         List<InputDevice> xrInputDevices = new List<InputDevice>();

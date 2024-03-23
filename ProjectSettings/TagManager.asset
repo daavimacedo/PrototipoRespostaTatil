@@ -7,10 +7,11 @@ TagManager:
   - parede
   - porta
   - chao
-  - objetoMedioAlto
   - objetoAlto
   - objetoMedioBaixo
   - colisor
+  - lixeira
+  - pilastra
   layers:
   - Default
   - TransparentFX

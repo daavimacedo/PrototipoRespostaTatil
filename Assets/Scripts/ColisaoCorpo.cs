@@ -26,7 +26,7 @@ public class ColisaoCorpo : MonoBehaviour
             somColisor.Play();
             //controller.SendHapticImpulse(0.9f, 1);
         } 
-        if (collision.gameObject.CompareTag("objetoAlto"))
+        if (collision.gameObject.CompareTag("pilastra"))
         {   
             somColisor.Play();
             //controller.SendHapticImpulse(0.9f, 1);
@@ -52,7 +52,7 @@ public class ColisaoCorpo : MonoBehaviour
             somColisor.Stop();
 
         }
-        if (collision.gameObject.CompareTag("objetoAlto"))
+        if (collision.gameObject.CompareTag("pilastra"))
         {   
             somColisor.Stop();
             //controller.SendHapticImpulse(0.9f, 1);
